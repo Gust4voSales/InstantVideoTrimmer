@@ -9,6 +9,11 @@ if 'cuts' not in st.session_state:
 def reset_cuts():
     st.session_state.cuts = []
 
+def generate_video():
+    VideoEditor.run(st.session_state.cuts, video_file.name)
+    st.balloons()
+
+
 st.title("Fast Video Trimer")
 
 # Video upload
@@ -58,7 +63,7 @@ if (video_file):
         right_column.text(end_time)
 
     if (len(st.session_state.cuts)>0):
-        st.button("Gerar vídeo", on_click=VideoEditor.run, args=(st.session_state.cuts, video_file.name))
+        st.button("Gerar vídeo", on_click=generate_video)
 
 
     
