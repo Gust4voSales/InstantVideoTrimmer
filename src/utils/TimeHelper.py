@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 def check_time_format(time):
     if (len(time)<8):
         return False
@@ -15,3 +17,9 @@ def check_time_format(time):
         return False
     
     return True
+
+def subtract_times(start_time, end_time):
+    start = timedelta(hours=int(start_time[0:2]), minutes=int(start_time[3:5]), seconds=int(start_time[6:8]))
+    end = timedelta(hours=int(end_time[0:2]), minutes=int(end_time[3:5]), seconds=int(end_time[6:8]))
+
+    return str(end-start)
