@@ -14,7 +14,7 @@ def generate_video():
     st.balloons()
 
 
-st.title("Fast Video Trimer")
+st.title("Instant Video Trimer")
 
 # Video upload
 video_file = st.file_uploader('', type=['mp4'], on_change=reset_cuts)

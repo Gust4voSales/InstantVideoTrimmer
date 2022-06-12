@@ -47,8 +47,8 @@ def cut_video(commands):
             subprocess.call(command.split(' '))
             f.write(f"file '{TEMP_OUTPUT_FILE_NAME + str(index)}.mp4'\n")
 
-def concatenate_videos():
-    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-y', '-f', 'concat', '-i', TEMP_CUTS_VIDEOS_FILE_NAME, '-c', 'copy', 'media/output.mp4'])
+def concatenate_videos(output_name):
+    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-y', '-f', 'concat', '-i', TEMP_CUTS_VIDEOS_FILE_NAME, '-c', 'copy', output_name])
     
 
 def clear_temp_data(video_cuts_length):
@@ -62,7 +62,7 @@ def run(cuts, input_video_name):
     generate_cuts_file(cuts)
     commands = parse_cuts_file_to_commands('media/'+input_video_name)
     cut_video(commands)
-    concatenate_videos()
+    concatenate_videos('media/'+'out_'+input_video_name)
 
     print(commands)
     clear_temp_data(len(commands))

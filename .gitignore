@@ -3,3 +3,5 @@ media/*
 
 # exception to the rule
 !media/.gitkeep 
+
+__pycache__/
