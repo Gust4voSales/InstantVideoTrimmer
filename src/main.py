@@ -17,7 +17,8 @@ def generate_video():
 st.title("Instant Video Trimer")
 
 # Video upload
-video_file = st.file_uploader('', type=['mp4'], on_change=reset_cuts)
+# video_file = st.file_uploader('', type=['mp4'], on_change=reset_cuts)
+video_file = st.file_uploader('', type=['mp4'])
 if (video_file):
     st.video(video_file, "video/mp4")
     
