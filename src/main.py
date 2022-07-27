@@ -9,8 +9,11 @@ if 'cuts' not in st.session_state:
 def reset_cuts():
     st.session_state.cuts = []
 
-def generate_video():
-    VideoEditor.run(st.session_state.cuts, video_file.name)
+def generate_video_fast():
+    VideoEditor.run(st.session_state.cuts, video_file.name, 'fast')
+    st.balloons()
+def generate_video_precise():
+    VideoEditor.run(st.session_state.cuts, video_file.name, 'precise')
     st.balloons()
 
 
@@ -64,7 +67,9 @@ if (video_file):
         right_column.text(end_time)
 
     if (len(st.session_state.cuts)>0):
-        st.button("Gerar vídeo", on_click=generate_video)
+        left, right = st.columns(2)
+        left.button("Gerar vídeo (Rápido)", on_click=generate_video_fast)
+        right.button("Gerar vídeo (Preciso)", on_click=generate_video_precise)
 
 
     

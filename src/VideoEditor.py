@@ -1,3 +1,4 @@
+# poetry run streamlit run src/main.py
 import os
 from utils import TimeHelper
 import subprocess
@@ -11,7 +12,7 @@ def generate_cuts_file(cuts):
     with open(TEMP_CUTS_TIMESTAMPS_FILE_NAME, 'w') as f:
         f.write('\n'.join(cuts))
 
-def parse_cuts_file_to_commands(input_video_name):
+def parse_cuts_file_to_commands(input_video_name, type):
     lines = []
     input_video_duration = subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', input_video_name]) 
     input_video_duration = int(float(input_video_duration.decode('utf-8').replace('\r\n', '')))
@@ -38,11 +39,15 @@ def parse_cuts_file_to_commands(input_video_name):
 
         # commented parts increase accuracy
         if (part_to_include_end_time=='end'):
-            commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -c copy {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
-            # commands.append(f'ffmpeg -ss {part_to_include_initial_time}.00 -i {input_video_name} {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
+            if (type=='fast'):
+                commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -c copy {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
+            else:
+                commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -preset ultrafast {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
         elif (part_to_include_end_time!='end' and part_to_include_end_time):
-            commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -to {part_to_include_end_time}.00 -c copy {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
-            # commands.append(f'ffmpeg -ss {part_to_include_initial_time}.00 -i {input_video_name} -to {part_to_include_end_time}.00 {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
+            if (type=='fast'):
+                commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -to {part_to_include_end_time}.00 -c copy {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
+            else:
+                commands.append(f'ffmpeg -loglevel quiet -ss {part_to_include_initial_time}.00 -i {input_video_name} -to {part_to_include_end_time}.00 -preset ultrafast {TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
 
     return commands
 
@@ -63,9 +68,9 @@ def clear_temp_data(video_cuts_length):
             os.remove(f'{TEMP_OUTPUT_FILE_NAME+str(index)}.mp4')
 
 
-def run(cuts, input_video_name):
+def run(cuts, input_video_name, type):
     generate_cuts_file(cuts)
-    commands = parse_cuts_file_to_commands('media/'+input_video_name)
+    commands = parse_cuts_file_to_commands('media/'+input_video_name, type)
     cut_video(commands)
     concatenate_videos('media/'+'out_'+input_video_name)
 
